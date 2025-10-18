@@ -3,137 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Mode Toggle</title>
+    <title>Theme Toggle App</title>
     <style>
-        /* CSS Variables for theming */
         :root {
-            --background-color: #f0f2f5;
-            --text-color: #333333;
-            --container-bg: #ffffff;
-            --button-bg: #007bff;
-            --button-text: #ffffff;
-            --button-hover-bg: #0056b3;
-            --shadow-color: rgba(0, 0, 0, 0.1);
+            --light-bg: #ffffff;
+            --light-text: #333333;
+            --dark-bg: #282c34;
+            --dark-text: #f0f0f0;
+            --button-bg-light: #007bff;
+            --button-text-light: #ffffff;
+            --button-bg-dark: #61afef;
+            --button-text-dark: #282c34;
+            --border-color-light: #cccccc;
+            --border-color-dark: #444444;
         }
 
-        body.dark {
-            --background-color: #282c34;
-            --text-color: #e0e0e0;
-            --container-bg: #3c4149;
-            --button-bg: #61afef;
-            --button-text: #282c34;
-            --button-hover-bg: #52a0e0;
-            --shadow-color: rgba(0, 0, 0, 0.3);
-        }
-
-        /* Base styles */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            transition: background-color 0.3s ease, color 0.3s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
+            background-color: var(--light-bg);
+            color: var(--light-text);
+            transition: background-color 0.3s ease, color 0.3s ease;
             box-sizing: border-box;
         }
 
+        body.dark {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
         .container {
-            max-width: 700px;
+            background-color: inherit; /* Inherit from body to respect theme */
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
             width: 100%;
-            background-color: var(--container-bg);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px var(--shadow-color);
             text-align: center;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color-light);
+            transition: border-color 0.3s ease;
+        }
+
+        body.dark .container {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color-dark);
         }
 
         h1 {
-            color: var(--text-color);
-            margin-bottom: 20px;
+            margin-top: 0;
             font-size: 2.5em;
-            transition: color 0.3s ease;
+            margin-bottom: 20px;
         }
 
         p {
-            line-height: 1.7;
-            margin-bottom: 15px;
             font-size: 1.1em;
-            transition: color 0.3s ease;
+            line-height: 1.6;
+            margin-bottom: 30px;
         }
 
         #dark-mode-toggle {
             padding: 12px 25px;
             font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
             border: none;
             border-radius: 5px;
-            background-color: var(--button-bg);
-            color: var(--button-text);
-            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-            margin-top: 25px;
+            cursor: pointer;
             outline: none;
+            background-color: var(--button-bg-light);
+            color: var(--button-text-light);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease;
         }
 
         #dark-mode-toggle:hover {
-            background-color: var(--button-hover-bg);
-            transform: translateY(-2px);
+            opacity: 0.9;
+            transform: translateY(-1px);
         }
 
         #dark-mode-toggle:active {
             transform: translateY(0);
         }
+
+        body.dark #dark-mode-toggle {
+            background-color: var(--button-bg-dark);
+            color: var(--button-text-dark);
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to My Static Page</h1>
-        <p>This page demonstrates a simple dark mode toggle functionality. Click the button below to switch between light and dark themes.</p>
-        <p>Your theme preference will be saved locally in your browser, so the page will remember your choice even after you close and reopen it.</p>
+    <main class="container">
+        <h1>Welcome to My Page</h1>
+        <p>This is a simple static web page demonstrating a dark mode toggle feature. Click the button below to switch between light and dark themes.</p>
         <button id="dark-mode-toggle">Toggle Dark Mode</button>
-    </div>
+    </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const toggleButton = document.getElementById('dark-mode-toggle');
+            const toggleButton = document.querySelector('#dark-mode-toggle');
             const body = document.body;
 
-            // Function to apply the chosen theme to the body and update button text
-            const applyTheme = (theme) => {
-                if (theme === 'dark') {
-                    body.classList.add('dark');
-                    toggleButton.textContent = 'Toggle Light Mode';
-                } else {
-                    body.classList.remove('dark');
-                    toggleButton.textContent = 'Toggle Dark Mode';
-                }
-            };
-
-            // Load theme preference from localStorage on page load
+            // Load theme preference from localStorage
             const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                applyTheme(savedTheme);
+            if (savedTheme === 'dark') {
+                body.classList.add('dark');
             } else {
-                // If no theme is saved, default to 'light'.
-                // This is crucial for the evaluation check to pass,
-                // ensuring the body does not have 'dark' class initially
-                // so the first click adds it.
-                applyTheme('light');
+                // Default to light if no preference or 'light'
+                body.classList.remove('dark');
             }
 
+            // Update button text based on current theme
+            function updateToggleButtonText() {
+                if (body.classList.contains('dark')) {
+                    toggleButton.textContent = 'Switch to Light Mode';
+                } else {
+                    toggleButton.textContent = 'Switch to Dark Mode';
+                }
+            }
+
+            // Initial button text update
+            updateToggleButtonText();
+
             // Add event listener for the toggle button
-            toggleButton.addEventListener('click', () => {
-                const currentThemeIsDark = body.classList.contains('dark');
-                const newTheme = currentThemeIsDark ? 'light' : 'dark';
-                applyTheme(newTheme);
-                localStorage.setItem('theme', newTheme); // Save the new preference
-            });
+            if (toggleButton) {
+                toggleButton.addEventListener('click', () => {
+                    body.classList.toggle('dark');
+
+                    // Save theme preference to localStorage
+                    if (body.classList.contains('dark')) {
+                        localStorage.setItem('theme', 'dark');
+                    } else {
+                        localStorage.setItem('theme', 'light');
+                    }
+                    updateToggleButtonText();
+                });
+            }
         });
     </script>
 </body>
